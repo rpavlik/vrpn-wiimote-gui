@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _vrpn.add(connection);
 
     vrpn_WiiMote * wm(new vrpn_WiiMote(WIIMOTE_NAME, connection, 0, 0, 0, 1));
-    _vrpn.add(static_cast<vrpn_BaseClass*>(wm));
+    _vrpn.add(wm);
 
     vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, connection));
     _vrpn.add(anaRem);
