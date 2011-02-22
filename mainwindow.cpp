@@ -13,11 +13,15 @@ MainWindow::MainWindow(QSharedPointer<WiimoteWand> wand, QWidget *parent) :
     ui->setupUi(this);
     connect(ui->connect, SIGNAL(clicked()), _wand.data(), SLOT(connect()));
     connect(ui->disconnect, SIGNAL(clicked()), _wand.data(), SLOT(disconnect()));
+
+    connect(_wand.data(), SIGNAL(startingConnectionAttempt()), this, SLOT(disableAllDuringConnectionAttempt()));
     connect(_wand.data(), SIGNAL(connected()), this, SLOT(updateButtons()));
     connect(_wand.data(), SIGNAL(disconnected()), this, SLOT(updateButtons()));
     connect(_wand.data(), SIGNAL(disconnected()), this, SLOT(handleDisconnect()));
     connect(_wand.data(), SIGNAL(connectionFailed(QString)), this, SLOT(handleMessages(QString)));
     connect(_wand.data(), SIGNAL(statusUpdate(QString)), this, SLOT(handleMessages(QString)));
+
+
 
     connect(_wand.data(), SIGNAL(batteryUpdate(float)), this, SLOT(setBattery(float)));
 }

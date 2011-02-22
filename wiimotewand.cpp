@@ -29,6 +29,7 @@ void WiimoteWand::connect() {
     _vrpn.clear();
 
     std::cout << "Creating connection" << std::endl;
+    emit startingConnectionAttempt();
     emit statusUpdate(QString("Creating server connection..."));
     _connection = vrpn_create_server_connection();
     if (!_connection) {
