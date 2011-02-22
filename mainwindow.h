@@ -1,37 +1,34 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "VRPNObjects.h"
-
 #include <QMainWindow>
+#include <QString>
 #include <QSharedPointer>
 
 namespace Ui {
     class MainWindow;
 }
 
-class VRPNObjects;
-
-class vrpn_Analog_Remote;
-class vrpn_Connection;
-class vrpn_WiiMote;
+class WiimoteWand;
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QSharedPointer<WiimoteWand> wand, QWidget *parent = 0);
     ~MainWindow();
 
-    void setBattery(float battery);
-
 public slots:
-
+    void setBattery(float battery);
+    void disableAllDuringConnectionAttempt();
+    void handleDisconnect();
+    void updateButtons();
+    void handleMessages(QString message);
 private:
     Ui::MainWindow *ui;
+    QSharedPointer<WiimoteWand> _wand;
 
-    VRPNObjects _vrpn;
 };
 
 #endif // MAINWINDOW_H

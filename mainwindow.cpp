@@ -1,36 +1,58 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "VRPNObjects.h"
+#include "wiimotewand.h"
 
-#include <vrpn_Connection.h>
-#include <vrpn_Analog.h>
-#include <vrpn_WiiMote.h>
+#include <QDateTime>
 
-static void VRPN_CALLBACK handle_wiimote(void* userdata, const vrpn_ANALOGCB a) {
-        static_cast<MainWindow*>(userdata)->setBattery(a.channel[0]);
-}
-
-static const char WIIMOTE_NAME[] = "WiiMote0";
-
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QSharedPointer<WiimoteWand> wand, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    _wand(wand)
 {
     ui->setupUi(this);
-    vrpn_Connection * connection(vrpn_create_server_connection());
-    _vrpn.add(connection);
+    connect(ui->connect, SIGNAL(clicked()), _wand.data(), SLOT(connect()));
+    connect(ui->disconnect, SIGNAL(clicked()), _wand.data(), SLOT(disconnect()));
+    connect(_wand.data(), SIGNAL(connected()), this, SLOT(updateButtons()));
+    connect(_wand.data(), SIGNAL(disconnected()), this, SLOT(updateButtons()));
+    connect(_wand.data(), SIGNAL(disconnected()), this, SLOT(handleDisconnect()));
+    connect(_wand.data(), SIGNAL(connectionFailed(QString)), this, SLOT(handleMessages(QString)));
+    connect(_wand.data(), SIGNAL(statusUpdate(QString)), this, SLOT(handleMessages(QString)));
 
-    vrpn_WiiMote * wm(new vrpn_WiiMote(WIIMOTE_NAME, connection, 0, 0, 0, 1));
-    _vrpn.add(wm);
-
-    vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, connection));
-    _vrpn.add(anaRem);
-
-    anaRem->register_change_handler(this, &handle_wiimote);
+    connect(_wand.data(), SIGNAL(batteryUpdate(float)), this, SLOT(setBattery(float)));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::setBattery(float battery) {
+    ui->batteryBar->setFormat("%p%");
+    ui->batteryBar->setValue(static_cast<int>(battery * 100));
+}
+
+void MainWindow::handleDisconnect() {
+    ui->batteryBar->setValue(0);
+    ui->batteryBar->setFormat("Unknown");
+    ui->deviceName->setText(QString(""));
+}
+
+void MainWindow::disableAllDuringConnectionAttempt() {
+    ui->connect->setEnabled(false);
+    ui->disconnect->setEnabled(false);
+}
+
+void MainWindow::updateButtons() {
+    bool connected = _wand->isConnected();
+    ui->connect->setEnabled(!connected);
+    ui->disconnect->setEnabled(connected);
+    if (connected) {
+        ui->deviceName->setText(_wand->deviceName());
+    }
+}
+
+void MainWindow::handleMessages(QString message) {
+    ui->textBrowser->append(QDateTime::currentDateTime().toString() + QString(": ") + message);
+}
+
