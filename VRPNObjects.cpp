@@ -32,10 +32,14 @@ void VRPNObjects::clear() {
         return;
     }
     /// Delete in reverse order
-    for (unsigned int i = _vrpn.size() - 1; i >= 0; --i) {
+    for (int i = _vrpn.size() - 1; i >= 0; --i) {
+        std::cout << "Deleting index " << i << std::endl << std::flush;
         delete _vrpn[i];
         _vrpn[i] = NULL;
+
+        std::cout << "OK deleting index " << i << std::endl << std::endl<< std::flush;
     }
+    std::cout << "Done clearing"<< std::endl << std::endl<< std::flush;
     _vrpn.clear();
 }
 
