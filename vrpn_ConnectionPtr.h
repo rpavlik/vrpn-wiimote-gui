@@ -3,6 +3,8 @@
 
 #include <vrpn_Connection.h>
 
+/// A shared pointer class for holding on to vrpn_Connections, using the
+/// existing "intrusive reference counting" automatically.
 class vrpn_ConnectionPtr {
 	public:
 		explicit vrpn_ConnectionPtr(vrpn_Connection * c = NULL) : _p(c) {
@@ -32,10 +34,6 @@ class vrpn_ConnectionPtr {
 
 		~vrpn_ConnectionPtr() {
 			reset();
-		}
-
-		bool valid() const {
-			return (_p != NULL);
 		}
 
 		void reset() {
@@ -69,6 +67,20 @@ class vrpn_ConnectionPtr {
 			return _p;
 		}
 
+		///@todo this is a hack to make safe bool compile on vc9 - what am I doing wrong?
+		bool operator!() const {
+			return !_p;
+		}
+
+		/// @name Safe Bool Idiom
+		/// @{
+        typedef vrpn_Connection* vrpn_ConnectionPtr::*unspecified_bool_type;
+		operator unspecified_bool_type() const {
+			return (_p) ? 
+			&vrpn_ConnectionPtr::_p : NULL;
+		}
+		/// @}
+
 		static vrpn_ConnectionPtr create_server_connection(int port = vrpn_DEFAULT_LISTEN_PORT_NO,
 			const char * local_in_logfile_name = NULL,
 			const char * local_out_logfile_name = NULL,
@@ -85,5 +97,26 @@ class vrpn_ConnectionPtr {
 		}
 		vrpn_Connection * _p;
 };
+
+template <typename T> 
+bool operator!=(const T& lhs,const vrpn_ConnectionPtr& rhs) {
+	rhs.this_type_does_not_support_comparisons();	
+	return false;	
+} 
+template <typename T>
+bool operator==(const T& lhs,const vrpn_ConnectionPtr& rhs) {
+	rhs.this_type_does_not_support_comparisons();
+	return false;		
+}
+template <typename T> 
+bool operator!=(const vrpn_ConnectionPtr& lhs,const T& rhs) {
+	lhs.this_type_does_not_support_comparisons();	
+	return false;	
+} 
+template <typename T>
+bool operator==(const vrpn_ConnectionPtr& lhs,const T& rhs) {
+	lhs.this_type_does_not_support_comparisons();
+	return false;		
+}
 
 #endif // _VRPN_CONNECTIONPTR_H_

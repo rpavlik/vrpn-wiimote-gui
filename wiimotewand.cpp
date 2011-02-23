@@ -34,7 +34,7 @@ void WiimoteWand::connect() {
     emit startingConnectionAttempt();
     emit statusUpdate(QString("Creating server connection..."));
 	vrpn_ConnectionPtr cnx(vrpn_ConnectionPtr::create_server_connection());
-    if (!cnx.valid()) {
+    if (!cnx) {
         emit connectionFailed(QString("Could not create connection!"));
     }
     _vrpn.add(cnx);

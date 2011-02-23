@@ -72,7 +72,7 @@ namespace detail {
 	class ConnectionPtrObject : public vrpn_MainloopObject {
 		public:
 			explicit ConnectionPtrObject(vrpn_ConnectionPtr o) : _instance(o) {
-				if (!o.valid()) {
+				if (!o) {
 					throw vrpn_MainloopObject::CannotWrapNullPointerIntoMainloopObject();
 				}
 			}
