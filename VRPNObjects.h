@@ -9,6 +9,7 @@
 
 class vrpn_BaseClass;
 class vrpn_Connection;
+#include <vrpn_Connection.h>
 
 
 
@@ -37,10 +38,13 @@ private:
     template<class T>
     class TypedVRPNObject : public VRPNObject{
     public:
-        TypedVRPNObject(T * o) :
-            _instance(o) { }
+        TypedVRPNObject(T * o, bool do_delete = true) :
+            _instance(o),
+            _do_delete(do_delete) { }
         virtual ~TypedVRPNObject() {
-            delete _instance;
+            if (_do_delete) {
+               delete _instance;
+            }
         }
 
         virtual void mainloop() {
@@ -49,6 +53,7 @@ private:
 
     private:
         T * _instance;
+        bool _do_delete;
     };
 
     template<class T>
@@ -79,5 +84,10 @@ private:
 
 
 };
+template<>
+inline VRPNObjects::VRPNObject * VRPNObjects::wrapVRPNObject<vrpn_Connection>(vrpn_Connection * o) {
+    // Connection objects auto-delete
+    return new VRPNObjects::TypedVRPNObject<vrpn_Connection>(o, false);
+}
 
 #endif // VRPNOBJECTS_H
