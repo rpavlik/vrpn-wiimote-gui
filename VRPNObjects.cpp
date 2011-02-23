@@ -15,8 +15,8 @@ VRPNObjects::~VRPNObjects() {
     clear();
 }
 
-void VRPNObjects::_add(VRPNObjects::VRPNObject * o) {
-    if (o == NULL) {
+void VRPNObjects::add(VRPNObjects::MainloopObjectPtr o) {
+    if (!o) {
         return;
     }
     QMutexLocker locker(&_vectorMutex);
@@ -57,9 +57,7 @@ void VRPNObjects::start() {
 void VRPNObjects::mainloop() {
     QMutexLocker locker(&_vectorMutex);
     for (unsigned int i = 0; i < _vrpn.size(); ++i) {
-        if (_vrpn[i]) {
-            _vrpn[i]->mainloop();
-        }
+        _vrpn[i]->mainloop();
     }
 }
 

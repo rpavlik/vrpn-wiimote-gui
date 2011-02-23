@@ -1,10 +1,12 @@
 #include "wiimotewand.h"
+#include "vrpn_ConnectionPtr.h"
 
 #include <vrpn_Connection.h>
 #include <vrpn_Analog.h>
 #include <vrpn_WiiMote.h>
 
 #include <iostream>
+
 
 static void VRPN_CALLBACK handle_wiimote(void* userdata, const vrpn_ANALOGCB a) {
         static_cast<WiimoteWand*>(userdata)->setBattery(a.channel[0]);
@@ -31,15 +33,15 @@ void WiimoteWand::connect() {
     std::cout << "Creating connection" << std::endl;
     emit startingConnectionAttempt();
     emit statusUpdate(QString("Creating server connection..."));
-    _connection = vrpn_create_server_connection();
-    if (!_connection) {
+	vrpn_ConnectionPtr cnx(vrpn_ConnectionPtr::create_server_connection());
+    if (!cnx.valid()) {
         emit connectionFailed(QString("Could not create connection!"));
     }
-    _vrpn.add(_connection);
+    _vrpn.add(cnx);
 
 
     emit statusUpdate(QString("Creating Wiimote device object..."));
-    _wiimote = new vrpn_WiiMote(WIIMOTE_NAME, _connection, 0, 0, 0, 1);
+    _wiimote = new vrpn_WiiMote(WIIMOTE_NAME, cnx, 0, 0, 0, 1);
     if (!_wiimote) {
         emit connectionFailed(QString("Creation of wiimote object failed!"));
         return;
@@ -86,8 +88,8 @@ void WiimoteWand::checkWiimoteDevice() {
     }
 
     emit statusUpdate(QString("Creating device client..."));
-
-    vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, _connection));
+	vrpn_ConnectionPtr cnx(static_cast<vrpn_Analog*>(_wiimote)->connectionPtr());
+    vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, cnx));
     if (!anaRem) {
         emit connectionFailed(QString("Creation of analog remote object failed!"));
         return;

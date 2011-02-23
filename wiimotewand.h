@@ -1,13 +1,12 @@
 #ifndef WIIMOTEWAND_H
 #define WIIMOTEWAND_H
 
-#include "VRPNObjects.h"
+#include "vrpn_QMainloopContainer.h"
 
 #include <QObject>
 #include <QString>
 
 class vrpn_WiiMote;
-class vrpn_Connection;
 
 class WiimoteWand : public QObject
 {
@@ -38,8 +37,7 @@ public slots:
 private:
     bool _connected;
     vrpn_WiiMote * _wiimote;
-    vrpn_Connection * _connection;
-    VRPNObjects _vrpn;
+    vrpn_QMainloopContainer _vrpn;
 
 public:
     void setBattery(float level);

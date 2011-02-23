@@ -38,7 +38,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(UseBackportedModules)
 
-find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtOpenGL REQUIRED)
+find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL REQUIRED) #QtMain
 include(${QT_USE_FILE})
 
 find_package(VRPN REQUIRED)
@@ -56,17 +56,20 @@ include_directories(${VRPN_INCLUDE_DIRS})
 set(SOURCES
 	main.cpp
 	mainwindow.cpp
-	VRPNObjects.cpp
-	wiimotewand.cpp)
+	wiimotewand.cpp
+	vrpn_MainloopContainer.cpp
+	vrpn_QMainloopContainer.cpp)
 
 set(HEADERS
-	VRPNConnectionPtr.h)
+	vrpn_ConnectionPtr.h
+	vrpn_MainloopContainer.h
+	vrpn_MainloopObject.h)
 
 set(UIS mainwindow.ui)
 
 set(MOCS
 	mainwindow.h
-	VRPNObjects.h
+	vrpn_QMainloopContainer.h
 	wiimotewand.h)
 
 #set(RESOURCES wiimote.qrc)
@@ -85,7 +88,7 @@ include_directories(${CMAKE_BINARY_DIR})
 # Build and link the app!
 add_executable(wiimote-wand-gui
 	MACOSX_BUNDLE
-	WIN32
+	#WIN32
 	${SOURCES}
 	${GENERATED_SOURCES}
 	${HEADERS}

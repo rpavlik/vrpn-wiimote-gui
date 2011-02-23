@@ -1,20 +1,23 @@
+#ifndef _VRPN_CONNECTIONPTR_H_
+#define _VRPN_CONNECTIONPTR_H_
+
 #include <vrpn_Connection.h>
 
-class VRPNConnectionPtr {
+class vrpn_ConnectionPtr {
 	public:
-		explicit VRPNConnectionPtr(vrpn_Connection * c = NULL) : _p(c) {
+		explicit vrpn_ConnectionPtr(vrpn_Connection * c = NULL) : _p(c) {
 			if (_p) {
 				_p->addReference();
 			}
 		}
 
-		VRPNConnectionPtr(VRPNConnectionPtr const& other) : _p(other._p) {
+		vrpn_ConnectionPtr(vrpn_ConnectionPtr const& other) : _p(other._p) {
 			if (_p) {
 				_p->addReference();
 			}
 		}
 
-		VRPNConnectionPtr & operator=(VRPNConnectionPtr const& other) {
+		vrpn_ConnectionPtr & operator=(vrpn_ConnectionPtr const& other) {
 			if (this == &other) {
 				/// self-assignment is a no-op
 				return *this;
@@ -27,8 +30,12 @@ class VRPNConnectionPtr {
 			return *this;
 		}
 
-		~VRPNConnectionPtr() {
+		~vrpn_ConnectionPtr() {
 			reset();
+		}
+
+		bool valid() const {
+			return (_p != NULL);
 		}
 
 		void reset() {
@@ -62,19 +69,21 @@ class VRPNConnectionPtr {
 			return _p;
 		}
 
-		static VRPNConnectionPtr create_server_connection(int port = vrpn_DEFAULT_LISTEN_PORT_NO,
+		static vrpn_ConnectionPtr create_server_connection(int port = vrpn_DEFAULT_LISTEN_PORT_NO,
 			const char * local_in_logfile_name = NULL,
 			const char * local_out_logfile_name = NULL,
 			const char * NIC_NAME = NULL) {
-				return VRPNConnectionPtr(
+				return vrpn_ConnectionPtr(
 					vrpn_create_server_connection(port, local_in_logfile_name, local_out_logfile_name, NIC_NAME),
 					false);						
 		}
 	private:
-		VRPNConnectionPtr(vrpn_Connection * c, bool needsAddRef) : _p(c) {
+		vrpn_ConnectionPtr(vrpn_Connection * c, bool needsAddRef) : _p(c) {
 			if (_p && needsAddRef) {
 				_p->addReference();
 			}
 		}
 		vrpn_Connection * _p;
 };
+
+#endif // _VRPN_CONNECTIONPTR_H_
