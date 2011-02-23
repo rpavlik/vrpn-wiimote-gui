@@ -56,17 +56,18 @@ include_directories(${VRPN_INCLUDE_DIRS})
 set(SOURCES
 	main.cpp
 	mainwindow.cpp
-        VRPNObjects.cpp
-        wiimotewand.cpp)
+	VRPNObjects.cpp
+	wiimotewand.cpp)
 
-set(HEADERS)
+set(HEADERS
+	VRPNConnectionPtr.h)
 
 set(UIS mainwindow.ui)
 
 set(MOCS
 	mainwindow.h
-        VRPNObjects.h
-        wiimotewand.h)
+	VRPNObjects.h
+	wiimotewand.h)
 
 #set(RESOURCES wiimote.qrc)
 
