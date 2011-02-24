@@ -1,24 +1,55 @@
 #include "QWiimoteWidget.h"
-#include "ui_QWiimoteWidget.h"
-
 #include <QGraphicsSvgItem>
 
+#include <iostream>
+
+/// Static definition
+bool QWiimoteWidget::_loaded_resources = false;
+
 QWiimoteWidget::QWiimoteWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::QWiimoteWidget)
+	QGraphicsView(parent)
 {
-    ui->setupUi(this);
-	_scene = new QGraphicsScene(ui->graphicsView);
-	ui->graphicsView->setScene(_scene);
-	QGraphicsSvgItem * svgItem = new QGraphicsSvgItem(":/wiimote-full.svg");
-	_scene->addItem(svgItem);
-	_scene->setSceneRect(svgItem->boundingRect().adjusted(-10, -10, 10, 10));
+	if (!_loaded_resources) {
+		Q_INIT_RESOURCE(wiimotewidget);
+		_loaded_resources = true;
+	}
+
+	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	updateGeometry();
+
+	setScene(new QGraphicsScene(this));
+	setTransformationAnchor(AnchorUnderMouse);
+	setDragMode(ScrollHandDrag);
+	setViewportUpdateMode(FullViewportUpdate);
+	// Prepare background check-board pattern
+	QPixmap tilePixmap(64, 64);
+	tilePixmap.fill(Qt::white);
+	QPainter tilePainter(&tilePixmap);
+	QColor color(220, 220, 220);
+	tilePainter.fillRect(0, 0, 32, 32, color);
+	tilePainter.fillRect(32, 32, 32, 32, color);
+	tilePainter.end();
+
+	setBackgroundBrush(tilePixmap);
+
+	QGraphicsScene *s = scene();
+
+	_wiimote = new QGraphicsSvgItem(":/wiimotewidget/wiimote-full.svg");
+	//_wiimote->setFlags(QGraphicsItem::ItemClipsToShape);
+	_wiimote->setZValue(0);
+	s->addItem(_wiimote);
+
+	std::cerr <<_wiimote->boundingRect().width() << " by " << _wiimote->boundingRect().height() << std::endl;
+	s->setSceneRect(_wiimote->boundingRect().adjusted(-10, -10, 10, 10));
+
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	fitInView(_wiimote, Qt::KeepAspectRatio);
 }
 
 QWiimoteWidget::~QWiimoteWidget()
 {
-    delete ui;
-	delete _scene;
+	delete _wiimote;
 }
 
 
@@ -68,4 +99,9 @@ void QWiimoteWidget::setPlusButton(bool state) {
 
 void QWiimoteWidget::setMinusButton(bool state) {
 
+}
+
+void QWiimoteWidget::resizeEvent(QResizeEvent * event) {
+	QGraphicsView::resizeEvent(event);
+	fitInView(_wiimote, Qt::KeepAspectRatio);
 }

@@ -8,7 +8,10 @@ WiimoteToolboxPanel::WiimoteToolboxPanel(QWidget * parent) :
 	QWidget(parent),
 	ui(new Ui::WiimotePanel) {
 	ui->setupUi(this);
-	wiiWidget = new QWiimoteWidget(this);
+	//QHBoxLayout * lay = new QHBoxLayout(ui->wiimoteContainer);
+	//wiiWidget = new QWiimoteWidget(ui->wiimoteContainer);
+	wiiWidget = new QWiimoteWidget;
+	ui->verticalLayout->addWidget(wiiWidget);
 }
 WiimoteToolboxPanel::~WiimoteToolboxPanel() {
 	delete ui;

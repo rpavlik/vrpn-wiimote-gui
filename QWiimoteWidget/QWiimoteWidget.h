@@ -1,14 +1,10 @@
 #ifndef QWIIMOTEWIDGET_H
 #define QWIIMOTEWIDGET_H
 
-#include <QWidget>
-#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsSvgItem>
 
-namespace Ui {
-    class QWiimoteWidget;
-}
-
-class QWiimoteWidget : public QWidget
+class QWiimoteWidget : public QGraphicsView
 {
     Q_OBJECT
 
@@ -29,10 +25,11 @@ public slots:
 	void setHomeButton(bool state);
 	void setPlusButton(bool state);
 	void setMinusButton(bool state);
-
+protected:
+	virtual void resizeEvent(QResizeEvent * event);
 private:
-	Ui::QWiimoteWidget *ui;
-	QGraphicsScene * _scene;
+	static bool _loaded_resources;
+	QGraphicsSvgItem * _wiimote;
 };
 
 #endif // QWIIMOTEWIDGET_H

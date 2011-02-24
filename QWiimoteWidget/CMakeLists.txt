@@ -7,7 +7,7 @@ set(SOURCES
 
 set(HEADERS)
 
-set(UIS QWiimoteWidget.ui)
+#set(UIS QWiimoteWidget.ui)
 
 set(MOCS
 	QWiimoteWidget.h)
@@ -15,7 +15,7 @@ set(MOCS
 set(RESOURCES wiimotewidget.qrc)
 
 # Let QT pre-process the files and add the generated files to the source list
-qt4_wrap_ui(GENERATED_SOURCES ${UIS})
+#qt4_wrap_ui(GENERATED_SOURCES ${UIS})
 qt4_add_resources(GENERATED_SOURCES ${RESOURCES})
 qt4_wrap_cpp(GENERATED_SOURCES ${MOCS})
 
