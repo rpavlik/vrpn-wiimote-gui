@@ -9,7 +9,7 @@
 /// Static definition
 bool QWiimoteWidget::_loaded_resources = false;
 
-static const QString WIISVG(":/wiimotewidget/wiimote-full.svg");
+static const QString WIISVG(":/wiimotewidget/full-wiimote.svg");
 static const QString ACTIVESVG(":/wiimotewidget/activated.svg");
 
 QWiimoteWidget::QWiimoteWidget(QWidget *parent) :
@@ -124,20 +124,25 @@ void QWiimoteWidget::resizeEvent(QResizeEvent * event) {
 }
 
 QGraphicsItem * QWiimoteWidget::_createAndAddSubitem(QString const& id) {
-	QGraphicsSvgItem * ret = new QGraphicsSvgItem(ACTIVESVG);
-	//ret->setSharedRenderer(_activated);
-	ret->setElementId(id);
-
-    ret->setCacheMode(QGraphicsItem::NoCache);
+	//QGraphicsSvgItem * ret = new QGraphicsSvgItem(ACTIVESVG);
+	QGraphicsSvgItem * sub = new QGraphicsSvgItem;
+	sub->setSharedRenderer(_activated);
+	sub->setElementId(id);
+	sub->setFlags(QGraphicsItem::ItemClipsToShape);
+	sub->setCacheMode(QGraphicsItem::NoCache);
 	QMatrix mat = _activated->matrixForElement(id);
+	QRectF bbox =  (_activated->boundsOnElement(id) * mat).boundingRect();
 
-	//QGraphicsItemGroup * ret = new QGraphicsItemGroup;
-	//ret->addToGroup(sub);
+	QString info = QString::number(bbox.topLeft().x()) + QString(", ") + QString::number(bbox.topLeft().x());
+	QMessageBox::information(this, id, info);
+	//double scale = 1.0; //-0.1;
+	QGraphicsItemGroup * ret = new QGraphicsItemGroup;
+	ret->addToGroup(sub);
 	//ret->setTransform(QTransform(mat));
-	ret->setZValue(500);
+	//ret->setPos(mat.dx() * scale, mat.dy() * scale);
+	ret->setPos(bbox.topLeft());
+	ret->setZValue(1);
 	ret->setVisible(false);
-	QString info = QString::number(mat.dx()) + ", " + QString::number(mat.dy());
-	//QMessageBox::information(this, id, info);
 
 	scene()->addItem(ret);
 	return ret;

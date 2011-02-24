@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/wiimotewidget">
-        <file alias="wiimote-full.svg">including-hidden-active-states.svg</file>
         <file>activated.svg</file>
+        <file>full-wiimote.svg</file>
     </qresource>
 </RCC>
