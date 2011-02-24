@@ -98,7 +98,11 @@ void WiimoteWand::checkWiimoteDeviceInit() {
 			emit statusUpdate(QString("..."));
 			QTimer::singleShot(300, this, SLOT(checkWiimoteDeviceInit()));
 		} else {
+#ifdef _WIN32
+			emit connectionFailed(QString("Timed out connecting to Wiimote! Are you sure you have paired with the Wiimote?"));
+#else
 			emit connectionFailed(QString("Timed out connecting to Wiimote!"));
+#endif
 			disconnect();
 		}
 #endif
