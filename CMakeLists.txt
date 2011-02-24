@@ -57,6 +57,7 @@ set(SOURCES
 	main.cpp
 	mainwindow.cpp
 	wiimotewand.cpp
+	WiimoteToolboxPanel.cpp
 	vrpn_MainloopContainer.cpp
 	vrpn_QMainloopContainer.cpp)
 
@@ -71,6 +72,7 @@ set(UIS mainwindow.ui
 set(MOCS
 	mainwindow.h
 	vrpn_QMainloopContainer.h
+	WiimoteToolboxPanel.h
 	wiimotewand.h)
 
 #set(RESOURCES wiimote.qrc)
