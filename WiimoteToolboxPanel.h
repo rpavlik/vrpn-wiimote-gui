@@ -7,6 +7,8 @@
 #include <QSharedPointer>
 #include <QWidget>
 
+class QWiimoteWidget;
+
 namespace Ui {
 	class WiimotePanel;
 }
@@ -22,6 +24,7 @@ class WiimoteToolboxPanel : public QWidget {
 		void disconnected();
 	private:
 		Ui::WiimotePanel * ui;
+		QWiimoteWidget * wiiWidget;
 };
 
 #endif // WIIMOTETOOLBOXPANEL_H

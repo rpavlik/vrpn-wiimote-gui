@@ -1,11 +1,14 @@
 #include "WiimoteToolboxPanel.h"
 #include "ui_wiimotepanel.h"
 
+#include "QWiimoteWidget/QWiimoteWidget.h"
+
 
 WiimoteToolboxPanel::WiimoteToolboxPanel(QWidget * parent) :
 	QWidget(parent),
 	ui(new Ui::WiimotePanel) {
 	ui->setupUi(this);
+	wiiWidget = new QWiimoteWidget(this);
 }
 WiimoteToolboxPanel::~WiimoteToolboxPanel() {
 	delete ui;

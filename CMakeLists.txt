@@ -53,6 +53,8 @@ endif()
 set(EXTRA_LIBS ${QT_LIBRARIES} ${VRPN_SERVER_LIBRARIES} ${WIIUSE_LIBRARIES})
 include_directories(${VRPN_INCLUDE_DIRS})
 
+add_subdirectory(QWiimoteWidget)
+
 set(SOURCES
 	main.cpp
 	mainwindow.cpp
@@ -99,7 +101,7 @@ add_executable(wiimote-wand-gui
 	${MOCS}
 	${RESOURCES})
 
-target_link_libraries(wiimote-wand-gui ${EXTRA_LIBS})
+target_link_libraries(wiimote-wand-gui QWiimoteWidget ${EXTRA_LIBS})
 
 
 if(INSTALL_WIIUSE_LIBRARY)
