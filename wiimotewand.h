@@ -34,12 +34,13 @@ class WiimoteWand : public QObject {
 		void connect();
 		void disconnect();
 
-		void checkWiimoteDevice();
+		void checkWiimoteDeviceInit();
+		void checkWiimoteDeviceRuntime();
 	private:
 		bool _connected;
 		vrpn_WiiMote * _wiimote;
 		vrpn_QMainloopContainer _vrpn;
-
+		int _timesChecked;
 	public:
 		void setBattery(float level);
 		void setButton(int button, bool state);

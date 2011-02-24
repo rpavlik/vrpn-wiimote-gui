@@ -23,7 +23,8 @@ static const char WIIMOTE_NAME[] = "WiiMote0";
 
 WiimoteWand::WiimoteWand(QObject *parent) :
 	QObject(parent),
-	_connected(false) {
+	_connected(false),
+	_timesChecked(0) {
 }
 
 QString WiimoteWand::deviceName() const {
@@ -52,36 +53,54 @@ void WiimoteWand::connect() {
 
 	_vrpn.add(_wiimote);
 #ifdef vrpn_THREADS_AVAILABLE
+	_timesChecked = 0;
 	emit statusUpdate(QString("Waiting for Wiimote to connect..."));
-	QTimer::singleShot(300, this, SLOT(checkWiimoteDevice()));
+	QTimer::singleShot(50, this, SLOT(checkWiimoteDeviceInit()));
 #else
 	if (!wm->isValid()) {
 		emit connectionFailed(QString("Connection to wiimote failed!"));
 		return;
 	}
-	checkWiimoteDevice();
+	checkWiimoteDeviceInit();
 #endif
-
-
 
 }
 
 void WiimoteWand::disconnect() {
-	if (_connected) {
+	//if (_connected) {
 		_vrpn.stop();
 		_vrpn.clear();
+		_wiimote = NULL;
 		_connected = false;
 		emit disconnected();
+	//}
+}
+
+void WiimoteWand::checkWiimoteDeviceRuntime() {
+	if (!_wiimote) {
+		return;
+	}
+	if (!_wiimote->isValid()) {
+		emit connectionFailed(QString("Lost connection to Wiimote!"));
+		disconnect();
+	} else {
+		QTimer::singleShot(300, this, SLOT(checkWiimoteDeviceRuntime()));
 	}
 }
 
-void WiimoteWand::checkWiimoteDevice() {
-	if (!_wiimote->isValid()) {
-		std::cout << "Wiimote not valid!" << std::endl;
 
+void WiimoteWand::checkWiimoteDeviceInit() {
+	_vrpn.mainloop();
+	if (!_wiimote->isValid()) {
 #ifdef vrpn_THREADS_AVAILABLE
-		std::cout << "Will check again later" << std::endl;
-		QTimer::singleShot(300, this, SLOT(checkWiimoteDevice()));
+		_timesChecked++;
+		if (_timesChecked < 12) {
+			emit statusUpdate(QString("..."));
+			QTimer::singleShot(300, this, SLOT(checkWiimoteDeviceInit()));
+		} else {
+			emit connectionFailed(QString("Timed out connecting to Wiimote!"));
+			disconnect();
+		}
 #endif
 		return;
 	}
@@ -115,6 +134,8 @@ void WiimoteWand::checkWiimoteDevice() {
 
 	emit statusUpdate(QString("Connected!"));
 	emit connected();
+
+	QTimer::singleShot(300, this, SLOT(checkWiimoteDeviceRuntime()));
 }
 
 void WiimoteWand::setBattery(float level) {
