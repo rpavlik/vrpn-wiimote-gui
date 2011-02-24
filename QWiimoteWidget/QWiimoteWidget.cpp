@@ -1,10 +1,16 @@
 #include "QWiimoteWidget.h"
+
 #include <QGraphicsSvgItem>
+#include <QSvgRenderer>
+#include <QMessageBox>
 
 #include <iostream>
 
 /// Static definition
 bool QWiimoteWidget::_loaded_resources = false;
+
+static const QString WIISVG(":/wiimotewidget/wiimote-full.svg");
+static const QString ACTIVESVG(":/wiimotewidget/activated.svg");
 
 QWiimoteWidget::QWiimoteWidget(QWidget *parent) :
 	QGraphicsView(parent)
@@ -34,17 +40,28 @@ QWiimoteWidget::QWiimoteWidget(QWidget *parent) :
 
 	QGraphicsScene *s = scene();
 
-	_wiimote = new QGraphicsSvgItem(":/wiimotewidget/wiimote-full.svg");
+	_wiimote = new QGraphicsSvgItem(WIISVG);
 	//_wiimote->setFlags(QGraphicsItem::ItemClipsToShape);
-	_wiimote->setZValue(0);
+	//_wiimote->setZValue(0);
 	s->addItem(_wiimote);
 
-	std::cerr <<_wiimote->boundingRect().width() << " by " << _wiimote->boundingRect().height() << std::endl;
-	s->setSceneRect(_wiimote->boundingRect().adjusted(-10, -10, 10, 10));
-
+	//std::cerr <<_wiimote->boundingRect().width() << " by " << _wiimote->boundingRect().height() << std::endl;
+	//s->setSceneRect(_wiimote->boundingRect().adjusted(-10, -10, 10, 10));
+/*
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	fitInView(_wiimote, Qt::KeepAspectRatio);
+*/
+	_activated = new QSvgRenderer(ACTIVESVG, this);
+	//_activated = _wiimote->renderer();
+
+	for (unsigned int i = 0; i < 4; ++i) {
+		_leds[i] = _createAndAddSubitem(QString("led") + QString::number(i+1));
+		_leds[i]->setVisible(true);
+	}
+
+	_buttonA = _createAndAddSubitem("aButtonDown");
+	_buttonA->setVisible(true);
 }
 
 QWiimoteWidget::~QWiimoteWidget()
@@ -103,5 +120,25 @@ void QWiimoteWidget::setMinusButton(bool state) {
 
 void QWiimoteWidget::resizeEvent(QResizeEvent * event) {
 	QGraphicsView::resizeEvent(event);
-	fitInView(_wiimote, Qt::KeepAspectRatio);
+	//fitInView(_wiimote, Qt::KeepAspectRatio);
+}
+
+QGraphicsItem * QWiimoteWidget::_createAndAddSubitem(QString const& id) {
+	QGraphicsSvgItem * ret = new QGraphicsSvgItem(ACTIVESVG);
+	//ret->setSharedRenderer(_activated);
+	ret->setElementId(id);
+
+    ret->setCacheMode(QGraphicsItem::NoCache);
+	QMatrix mat = _activated->matrixForElement(id);
+
+	//QGraphicsItemGroup * ret = new QGraphicsItemGroup;
+	//ret->addToGroup(sub);
+	//ret->setTransform(QTransform(mat));
+	ret->setZValue(500);
+	ret->setVisible(false);
+	QString info = QString::number(mat.dx()) + ", " + QString::number(mat.dy());
+	//QMessageBox::information(this, id, info);
+
+	scene()->addItem(ret);
+	return ret;
 }

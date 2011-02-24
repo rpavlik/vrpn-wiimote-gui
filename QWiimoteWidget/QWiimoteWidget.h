@@ -13,6 +13,7 @@ public:
     ~QWiimoteWidget();
 
 public slots:
+	/// num is 1-4
 	void setWiimoteLED(int num, bool state);
 	void setAButton(bool state);
 	void setBButton(bool state);
@@ -28,8 +29,24 @@ public slots:
 protected:
 	virtual void resizeEvent(QResizeEvent * event);
 private:
+	QGraphicsItem * _createAndAddSubitem(QString const& id);
 	static bool _loaded_resources;
 	QGraphicsSvgItem * _wiimote;
+	QSvgRenderer * _activated;
+	QGraphicsItem * _leds[4];
+	QGraphicsItem * _button1;
+	QGraphicsItem * _button2;
+	QGraphicsItem * _buttonA;
+	QGraphicsItem * _buttonB;
+	QGraphicsItem * _buttonPlus;
+	QGraphicsItem * _buttonMinus;
+	QGraphicsItem * _buttonHome;
+
+	QGraphicsSvgItem * _buttonLeft;
+	QGraphicsSvgItem * _buttonRight;
+	QGraphicsSvgItem * _buttonDown;
+	QGraphicsSvgItem * _buttonUp;
+
 };
 
 #endif // QWIIMOTEWIDGET_H
