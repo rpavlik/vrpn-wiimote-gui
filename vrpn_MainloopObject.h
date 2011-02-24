@@ -37,37 +37,37 @@ class vrpn_MainloopObject {
 namespace detail {
 	template<class T>
 	class TypedMainloopObject : public vrpn_MainloopObject {
-	public:
-		TypedMainloopObject(T * o, bool do_delete = true) :
-			_instance(o),
-			_do_delete(do_delete) {
+		public:
+			TypedMainloopObject(T * o, bool do_delete = true) :
+				_instance(o),
+				_do_delete(do_delete) {
 				if (!o) {
 					throw vrpn_MainloopObject::CannotWrapNullPointerIntoMainloopObject();
 				}
-	#ifdef VRPNOBJECT_VERBOSE
+#ifdef VRPNOBJECT_VERBOSE
 				std::cout << "Wrapping vrpn object " << o << std::endl;
-	#endif
+#endif
 			}
-		virtual ~TypedMainloopObject() {
-			if (_do_delete) {
-			   delete _instance;
-	#ifdef VRPNOBJECT_VERBOSE
-			   std::cout << "Deleted contained vrpn object " << _instance << std::endl;
-			} else {
-				std::cout << "NOT deleting contained vrpn object " << _instance << std::endl;
-	#endif
+			virtual ~TypedMainloopObject() {
+				if (_do_delete) {
+					delete _instance;
+#ifdef VRPNOBJECT_VERBOSE
+					std::cout << "Deleted contained vrpn object " << _instance << std::endl;
+				} else {
+					std::cout << "NOT deleting contained vrpn object " << _instance << std::endl;
+#endif
+				}
 			}
-		}
-		
 
-        virtual void mainloop() {
-            _instance->mainloop();
-        }
 
-    private:
-        T * _instance;
-        bool _do_delete;
-    };
+			virtual void mainloop() {
+				_instance->mainloop();
+			}
+
+		private:
+			T * _instance;
+			bool _do_delete;
+	};
 
 	class ConnectionPtrObject : public vrpn_MainloopObject {
 		public:
@@ -102,11 +102,11 @@ inline vrpn_MainloopObject * vrpn_MainloopObject::wrap(T * o, bool owner) {
 /* Disabled for now because we do need to delete connection objects we create ourselves */
 template<>
 inline vrpn_MainloopObject * vrpn_MainloopObject::wrap<vrpn_Connection>(vrpn_Connection * o) {
-    // Connection objects auto-delete
+	// Connection objects auto-delete
 #ifdef VRPNOBJECT_VERBOSE
 	std::cout << "Creating a non-deleting wrapper for the vrpn_Connection instance " << o << std::endl;
 #endif
-    return new detail::TypedMainloopObject<vrpn_Connection>(o, false);
+	return new detail::TypedMainloopObject<vrpn_Connection>(o, false);
 }
 
 #endif

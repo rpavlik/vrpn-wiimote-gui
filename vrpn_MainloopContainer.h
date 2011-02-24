@@ -5,25 +5,24 @@
 
 #include <vector>
 
-class vrpn_MainloopContainer 
-{
-public:
-	vrpn_MainloopContainer() {}
-    ~vrpn_MainloopContainer();
+class vrpn_MainloopContainer {
+	public:
+		vrpn_MainloopContainer() {}
+		~vrpn_MainloopContainer();
 
-    void clear();
+		void clear();
 
-    void add(vrpn_MainloopObject * o);
+		void add(vrpn_MainloopObject * o);
 
-    template<class T>
-    void add(T o) {
-		add(vrpn_MainloopObject::wrap(o));
-    }
+		template<class T>
+		void add(T o) {
+			add(vrpn_MainloopObject::wrap(o));
+		}
 
-    void mainloop();
+		void mainloop();
 
-private:
-    std::vector<vrpn_MainloopObject *> _vrpn;
+	private:
+		std::vector<vrpn_MainloopObject *> _vrpn;
 };
 
 #endif // _VRPN_MAINLOOPCONTAINER_H_

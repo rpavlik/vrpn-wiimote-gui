@@ -8,39 +8,38 @@
 
 class vrpn_WiiMote;
 
-class WiimoteWand : public QObject
-{
-    Q_OBJECT
-public:
-    explicit WiimoteWand(QObject *parent = 0);
+class WiimoteWand : public QObject {
+		Q_OBJECT
+	public:
+		explicit WiimoteWand(QObject *parent = 0);
 
-    bool isConnected() const {
-        return _connected;
-    }
+		bool isConnected() const {
+			return _connected;
+		}
 
-    QString deviceName() const;
+		QString deviceName() const;
 
-signals:
-    void startingConnectionAttempt();
-    void connected();
-    void connectionFailed(QString message);
-    void statusUpdate(QString message);
-    void disconnected();
+	signals:
+		void startingConnectionAttempt();
+		void connected();
+		void connectionFailed(QString message);
+		void statusUpdate(QString message);
+		void disconnected();
 
-    void batteryUpdate(float level);
+		void batteryUpdate(float level);
 
-public slots:
-    void connect();
-    void disconnect();
+	public slots:
+		void connect();
+		void disconnect();
 
-    void checkWiimoteDevice();
-private:
-    bool _connected;
-    vrpn_WiiMote * _wiimote;
-    vrpn_QMainloopContainer _vrpn;
+		void checkWiimoteDevice();
+	private:
+		bool _connected;
+		vrpn_WiiMote * _wiimote;
+		vrpn_QMainloopContainer _vrpn;
 
-public:
-    void setBattery(float level);
+	public:
+		void setBattery(float level);
 };
 
 #endif // WIIMOTEWAND_H
