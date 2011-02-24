@@ -22,11 +22,13 @@ class WiimoteWand : public QObject {
 	signals:
 		void startingConnectionAttempt();
 		void connected();
+		void wiimoteNumber(int num); // in 1-4
 		void connectionFailed(QString message);
 		void statusUpdate(QString message);
 		void disconnected();
 
 		void batteryUpdate(float level);
+		void buttonUpdate(int button, bool state);
 
 	public slots:
 		void connect();
@@ -40,6 +42,7 @@ class WiimoteWand : public QObject {
 
 	public:
 		void setBattery(float level);
+		void setButton(int button, bool state);
 };
 
 #endif // WIIMOTEWAND_H

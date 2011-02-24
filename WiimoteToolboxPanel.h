@@ -22,6 +22,8 @@ class WiimoteToolboxPanel : public QWidget {
 		void setBattery(float battery);
 		void connected(QSharedPointer<WiimoteWand> wand);
 		void disconnected();
+		void buttonUpdate(int button, bool state);
+		void wiimoteNumber(int num);
 	private:
 		Ui::WiimotePanel * ui;
 		QWiimoteWidget * wiiWidget;

@@ -26,6 +26,8 @@ MainWindow::MainWindow(QSharedPointer<WiimoteWand> wand, QWidget *parent) :
 
 	connect(_wand.data(), SIGNAL(batteryUpdate(float)), _wmPanel.data(), SLOT(setBattery(float)));
 	connect(_wand.data(), SIGNAL(disconnected()), _wmPanel.data(), SLOT(disconnected()));
+	connect(_wand.data(), SIGNAL(wiimoteNumber(int)), _wmPanel.data(), SLOT(wiimoteNumber(int)));
+	connect(_wand.data(), SIGNAL(buttonUpdate(int, bool)), _wmPanel.data(), SLOT(buttonUpdate(int, bool)));
 
 	handleMessages(QString("Application started"));
 }
@@ -37,6 +39,7 @@ MainWindow::~MainWindow() {
 void MainWindow::connectedWiimote() {
 	ui->toolBox->addItem(_wmPanel.data(), _wand->deviceName());
 	_wmPanel->connected(_wand);
+	ui->toolBox->setCurrentIndex(ui->toolBox->count() - 1);
 }
 void MainWindow::handleDisconnect() {
 	ui->toolBox->removeItem(1);

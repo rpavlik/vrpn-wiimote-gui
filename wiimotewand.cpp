@@ -3,6 +3,7 @@
 
 #include <vrpn_Connection.h>
 #include <vrpn_Analog.h>
+#include <vrpn_Button.h>
 #include <vrpn_WiiMote.h>
 
 #include <iostream>
@@ -10,6 +11,10 @@
 
 static void VRPN_CALLBACK handle_wiimote(void* userdata, const vrpn_ANALOGCB a) {
 	static_cast<WiimoteWand*>(userdata)->setBattery(a.channel[0]);
+}
+static void VRPN_CALLBACK handle_button(void *userdata,
+										const vrpn_BUTTONCB info) {
+	static_cast<WiimoteWand*>(userdata)->setButton(info.button, static_cast<bool>(info.state));
 }
 
 
@@ -45,6 +50,7 @@ void WiimoteWand::connect() {
 		emit connectionFailed(QString("Creation of wiimote object failed!"));
 		return;
 	}
+	emit wiimoteNumber(1);
 
 	_vrpn.add(_wiimote);
 #ifdef vrpn_THREADS_AVAILABLE
@@ -86,7 +92,7 @@ void WiimoteWand::checkWiimoteDevice() {
 		return;
 	}
 
-	emit statusUpdate(QString("Creating device client..."));
+	emit statusUpdate(QString("Creating analog device client..."));
 	vrpn_ConnectionPtr cnx(static_cast<vrpn_Analog*>(_wiimote)->connectionPtr());
 	vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, cnx));
 	if (!anaRem) {
@@ -96,6 +102,16 @@ void WiimoteWand::checkWiimoteDevice() {
 	_vrpn.add(anaRem);
 
 	anaRem->register_change_handler(this, &handle_wiimote);
+
+	emit statusUpdate(QString("Creating button device client..."));
+	vrpn_Button_Remote * btnRem(new vrpn_Button_Remote(WIIMOTE_NAME, cnx));
+	if (!btnRem) {
+		emit connectionFailed(QString("Creation of button remote object failed!"));
+		return;
+	}
+	_vrpn.add(btnRem);
+
+	btnRem->register_change_handler(this, &handle_button);
 
 
 	emit statusUpdate(QString("Starting VRPN mainloop..."));
@@ -110,4 +126,8 @@ void WiimoteWand::checkWiimoteDevice() {
 void WiimoteWand::setBattery(float level) {
 	std::cout << "Got battery level " << level << std::endl;
 	emit batteryUpdate(level);
+}
+
+void WiimoteWand::setButton(int button, bool state) {
+	emit buttonUpdate(button, state);
 }
