@@ -34,7 +34,6 @@ void WiimoteWand::connect() {
 	disconnect();
 	_vrpn.clear();
 
-	std::cout << "Creating connection" << std::endl;
 	emit startingConnectionAttempt();
 	emit statusUpdate(QString("Creating server connection..."));
 	vrpn_ConnectionPtr cnx(vrpn_ConnectionPtr::create_server_connection());
@@ -42,7 +41,6 @@ void WiimoteWand::connect() {
 		emit connectionFailed(QString("Could not create connection!"));
 	}
 	_vrpn.add(cnx);
-
 
 	emit statusUpdate(QString("Creating Wiimote device object..."));
 	_wiimote = new vrpn_WiiMote(WIIMOTE_NAME, cnx, 0, 0, 0, 1);
@@ -55,15 +53,12 @@ void WiimoteWand::connect() {
 	_vrpn.add(_wiimote);
 #ifdef vrpn_THREADS_AVAILABLE
 	emit statusUpdate(QString("Waiting for Wiimote to connect..."));
-	std::cout << "threads available, this could be annoying." << std::endl;
 	QTimer::singleShot(300, this, SLOT(checkWiimoteDevice()));
 #else
 	if (!wm->isValid()) {
-		std::cout << "wiimote device reports that it is invalid" << std::endl << std::flush;
 		emit connectionFailed(QString("Connection to wiimote failed!"));
 		return;
 	}
-	std::cout << "wiimote device reports that it is valid" << std::endl;
 	checkWiimoteDevice();
 #endif
 
@@ -81,7 +76,6 @@ void WiimoteWand::disconnect() {
 }
 
 void WiimoteWand::checkWiimoteDevice() {
-	std::cout << "Checking wiimote status" << std::endl;
 	if (!_wiimote->isValid()) {
 		std::cout << "Wiimote not valid!" << std::endl;
 
