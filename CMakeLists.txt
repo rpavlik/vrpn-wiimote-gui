@@ -38,7 +38,7 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(UseBackportedModules)
 
-find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL REQUIRED) #QtMain
+find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSVG REQUIRED)
 include(${QT_USE_FILE})
 
 find_package(VRPN REQUIRED)
@@ -93,7 +93,7 @@ include_directories(${CMAKE_BINARY_DIR})
 # Build and link the app!
 add_executable(wiimote-wand-gui
 	MACOSX_BUNDLE
-	#WIN32
+	WIN32
 	${SOURCES}
 	${GENERATED_SOURCES}
 	${HEADERS}
