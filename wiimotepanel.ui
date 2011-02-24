@@ -21,6 +21,9 @@
   </property>
   <layout class="QHBoxLayout" name="panelLayout">
    <item>
+    <widget class="QWiimoteWidget" name="wiiWidget"/>
+   </item>
+   <item>
     <layout class="QFormLayout" name="formLayout">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
@@ -63,6 +66,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QWiimoteWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>QWiimoteWidget/QWiimoteWidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

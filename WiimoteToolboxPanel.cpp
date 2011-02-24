@@ -8,8 +8,7 @@ WiimoteToolboxPanel::WiimoteToolboxPanel(QWidget * parent) :
 	QWidget(parent),
 	ui(new Ui::WiimotePanel) {
 	ui->setupUi(this);
-	wiiWidget = new QWiimoteWidget;
-	ui->panelLayout->addWidget(wiiWidget);
+	wiiWidget = ui->wiiWidget;
 }
 WiimoteToolboxPanel::~WiimoteToolboxPanel() {
 	delete ui;
