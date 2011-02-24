@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>wiimote.svg</file>
         <file>wiimote-mono.svg</file>
+        <file>wiimote-server-icon-simpler.svg</file>
     </qresource>
 </RCC>

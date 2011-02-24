@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="wiimoteresources.qrc">
-    <normaloff>:/wiimote-mono.svg</normaloff>:/wiimote-mono.svg</iconset>
+    <normaloff>:/wiimote-server-icon-simpler.svg</normaloff>:/wiimote-server-icon-simpler.svg</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
