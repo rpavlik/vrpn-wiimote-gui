@@ -2,7 +2,7 @@
 #define QWIIMOTEWIDGET_H
 
 #include <QGraphicsView>
-#include <QGraphicsSvgItem>
+#include <QSvgRenderer>
 
 class QWiimoteWidget : public QGraphicsView
 {
@@ -31,9 +31,11 @@ protected:
 private:
 	QGraphicsItem * _createAndAddSubitem(QString const& id);
 	static bool _loaded_resources;
-	QGraphicsSvgItem * _wiimote;
+	QGraphicsItem * _wiimote;
 	QSvgRenderer * _activated;
+
 	QGraphicsItem * _leds[4];
+
 	QGraphicsItem * _button1;
 	QGraphicsItem * _button2;
 	QGraphicsItem * _buttonA;
@@ -42,10 +44,10 @@ private:
 	QGraphicsItem * _buttonMinus;
 	QGraphicsItem * _buttonHome;
 
-	QGraphicsSvgItem * _buttonLeft;
-	QGraphicsSvgItem * _buttonRight;
-	QGraphicsSvgItem * _buttonDown;
-	QGraphicsSvgItem * _buttonUp;
+	QGraphicsItem * _buttonLeft;
+	QGraphicsItem * _buttonRight;
+	QGraphicsItem * _buttonDown;
+	QGraphicsItem * _buttonUp;
 
 };
 
