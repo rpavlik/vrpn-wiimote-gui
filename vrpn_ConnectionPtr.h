@@ -46,7 +46,7 @@ class vrpn_ConnectionPtr {
 		vrpn_Connection * get() const {
 			return _p;
 		}
-		
+
 		operator vrpn_Connection*() const {
 			return _p;
 		}
@@ -55,7 +55,7 @@ class vrpn_ConnectionPtr {
 			return *_p;
 		}
 
-		vrpn_Connection const& operator*() const{
+		vrpn_Connection const& operator*() const {
 			return *_p;
 		}
 
@@ -63,7 +63,7 @@ class vrpn_ConnectionPtr {
 			return _p;
 		}
 
-		vrpn_Connection const* operator->() const{
+		vrpn_Connection const* operator->() const {
 			return _p;
 		}
 
@@ -74,21 +74,32 @@ class vrpn_ConnectionPtr {
 
 		/// @name Safe Bool Idiom
 		/// @{
-        typedef vrpn_Connection* vrpn_ConnectionPtr::*unspecified_bool_type;
+		typedef vrpn_Connection* vrpn_ConnectionPtr::*unspecified_bool_type;
 		operator unspecified_bool_type() const {
-			return (_p) ? 
-			&vrpn_ConnectionPtr::_p : NULL;
+			return (_p) ?
+			       &vrpn_ConnectionPtr::_p : NULL;
 		}
 		/// @}
 
+		/// Use this function, rather than vrpn_create_server_connection()
 		static vrpn_ConnectionPtr create_server_connection(int port = vrpn_DEFAULT_LISTEN_PORT_NO,
-			const char * local_in_logfile_name = NULL,
-			const char * local_out_logfile_name = NULL,
-			const char * NIC_NAME = NULL) {
-				return vrpn_ConnectionPtr(
-					vrpn_create_server_connection(port, local_in_logfile_name, local_out_logfile_name, NIC_NAME),
-					false);						
+		        const char * local_in_logfile_name = NULL,
+		        const char * local_out_logfile_name = NULL,
+		        const char * NIC_NAME = NULL) {
+			return vrpn_ConnectionPtr(
+			           vrpn_create_server_connection(port, local_in_logfile_name, local_out_logfile_name, NIC_NAME),
+			           false);
 		}
+
+		static vrpn_ConnectionPtr create_server_connection(
+		    const char * cname,
+		    const char * local_in_logfile_name = NULL,
+		    const char * local_out_logfile_name = NULL) {
+			return vrpn_ConnectionPtr(
+			           vrpn_create_server_connection(cname, local_in_logfile_name, local_out_logfile_name),
+			           false);
+		}
+
 	private:
 		vrpn_ConnectionPtr(vrpn_Connection * c, bool needsAddRef) : _p(c) {
 			if (_p && needsAddRef) {
@@ -98,25 +109,25 @@ class vrpn_ConnectionPtr {
 		vrpn_Connection * _p;
 };
 
-template <typename T> 
-bool operator!=(const T& lhs,const vrpn_ConnectionPtr& rhs) {
-	rhs.this_type_does_not_support_comparisons();	
-	return false;	
-} 
 template <typename T>
-bool operator==(const T& lhs,const vrpn_ConnectionPtr& rhs) {
+bool operator!=(const T& lhs, const vrpn_ConnectionPtr& rhs) {
 	rhs.this_type_does_not_support_comparisons();
-	return false;		
+	return false;
 }
-template <typename T> 
-bool operator!=(const vrpn_ConnectionPtr& lhs,const T& rhs) {
-	lhs.this_type_does_not_support_comparisons();	
-	return false;	
-} 
 template <typename T>
-bool operator==(const vrpn_ConnectionPtr& lhs,const T& rhs) {
+bool operator==(const T& lhs, const vrpn_ConnectionPtr& rhs) {
+	rhs.this_type_does_not_support_comparisons();
+	return false;
+}
+template <typename T>
+bool operator!=(const vrpn_ConnectionPtr& lhs, const T& rhs) {
 	lhs.this_type_does_not_support_comparisons();
-	return false;		
+	return false;
+}
+template <typename T>
+bool operator==(const vrpn_ConnectionPtr& lhs, const T& rhs) {
+	lhs.this_type_does_not_support_comparisons();
+	return false;
 }
 
 #endif // _VRPN_CONNECTIONPTR_H_
