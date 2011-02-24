@@ -65,7 +65,8 @@ set(HEADERS
 	vrpn_MainloopContainer.h
 	vrpn_MainloopObject.h)
 
-set(UIS mainwindow.ui)
+set(UIS mainwindow.ui
+	wiimotepanel.ui)
 
 set(MOCS
 	mainwindow.h
