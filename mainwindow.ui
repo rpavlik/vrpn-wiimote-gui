@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Wiimote Wand Server</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="wiimoteresources.qrc">
+    <normaloff>:/wiimote-mono.svg</normaloff>:/wiimote-mono.svg</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
@@ -107,6 +111,8 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="wiimoteresources.qrc"/>
+ </resources>
  <connections/>
 </ui>
