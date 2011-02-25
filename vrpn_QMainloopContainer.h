@@ -21,15 +21,20 @@ class vrpn_QMainloopContainer : public QObject {
 			add(vrpn_MainloopObject::wrap(o));
 		}
 
-		void clear();
-
-
 	signals:
+		void added();
+		void started();
+		void stopped();
+		void beforeMainloop();
+		void afterMainloop();
+		void cleared();
 
 	public slots:
 		void start();
 		void mainloop();
 		void stop();
+		void clear();
+
 	private:
 		QMutex _vectorMutex;
 		QSharedPointer<QTimer> _timer;

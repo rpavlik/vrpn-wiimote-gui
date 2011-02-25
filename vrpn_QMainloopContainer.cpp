@@ -14,14 +14,20 @@ void vrpn_QMainloopContainer::add(vrpn_MainloopObject * o) {
 	if (!o) {
 		return;
 	}
-	QMutexLocker locker(&_vectorMutex);
-	_vrpn.add(o);
+	{
+		QMutexLocker locker(&_vectorMutex);
+		_vrpn.add(o);
+	}
+	emit added();
 }
 
 void vrpn_QMainloopContainer::clear() {
 	stop();
-	QMutexLocker locker(&_vectorMutex);
-	_vrpn.clear();
+	{
+		QMutexLocker locker(&_vectorMutex);
+		_vrpn.clear();
+	}
+	emit cleared();
 }
 
 void vrpn_QMainloopContainer::start() {
@@ -32,12 +38,17 @@ void vrpn_QMainloopContainer::start() {
 	_timer = tmr;
 	connect(_timer.data(), SIGNAL(timeout()), this, SLOT(mainloop()));
 
+	emit started();
 	_timer->start(20);
 }
 
 void vrpn_QMainloopContainer::mainloop() {
-	QMutexLocker locker(&_vectorMutex);
-	_vrpn.mainloop();
+	emit beforeMainloop();
+	{
+		QMutexLocker locker(&_vectorMutex);
+		_vrpn.mainloop();
+	}
+	emit afterMainloop();
 }
 
 void vrpn_QMainloopContainer::stop() {
@@ -46,4 +57,6 @@ void vrpn_QMainloopContainer::stop() {
 	}
 	_timer->stop();
 	_timer.clear();
+
+	emit stopped();
 }
