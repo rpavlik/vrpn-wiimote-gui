@@ -24,7 +24,7 @@ static const char WIIMOTE_NAME[] = "WiiMote0";
 WiimoteWand::WiimoteWand(QObject *parent) :
 	QObject(parent),
 	_connected(false),
-	_timesChecked(0) {
+        _timeWaited(0) {
 }
 
 QString WiimoteWand::deviceName() const {
@@ -53,8 +53,9 @@ void WiimoteWand::connect() {
 
 	_vrpn.add(_wiimote);
 #ifdef vrpn_THREADS_AVAILABLE
-	_timesChecked = 0;
-	emit statusUpdate(QString("Waiting for Wiimote to connect..."));
+        _timeWaited = 50;
+        emit statusUpdate(QString("Waiting for Wiimote to connect, running mainloop..."));
+        _vrpn.start();
 	QTimer::singleShot(50, this, SLOT(checkWiimoteDeviceInit()));
 #else
 	if (!wm->isValid()) {
@@ -90,12 +91,11 @@ void WiimoteWand::checkWiimoteDeviceRuntime() {
 
 
 void WiimoteWand::checkWiimoteDeviceInit() {
-	_vrpn.mainloop();
 	if (!_wiimote->isValid()) {
 #ifdef vrpn_THREADS_AVAILABLE
-		_timesChecked++;
-		if (_timesChecked < 12) {
+                if (_timeWaited < 5000) {
 			emit statusUpdate(QString("..."));
+                        _timeWaited += 300;
 			QTimer::singleShot(300, this, SLOT(checkWiimoteDeviceInit()));
 		} else {
 #ifdef _WIN32
@@ -108,6 +108,8 @@ void WiimoteWand::checkWiimoteDeviceInit() {
 #endif
 		return;
 	}
+        emit statusUpdate(QString("Got valid connection to Wiimote."));
+        _vrpn.stop();
 
 	emit statusUpdate(QString("Creating analog device client..."));
 	vrpn_ConnectionPtr cnx(static_cast<vrpn_Analog*>(_wiimote)->connectionPtr());
