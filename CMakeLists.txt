@@ -88,7 +88,7 @@ qt4_wrap_cpp(GENERATED_SOURCES ${MOCS})
 source_group("Generated Sources - Do Not Edit" FILES ${GENERATED_SOURCES})
 
 # Make sure the compiler can find the pre-processed files from qt4_wrap_ui
-include_directories(${CMAKE_BINARY_DIR})
+include_directories(${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Build and link the app!
 add_executable(wiimote-wand-gui
