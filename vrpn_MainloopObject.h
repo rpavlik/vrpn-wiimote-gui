@@ -14,27 +14,39 @@
 
 /// An interface for all VRPN objects that have a "mainloop" method.
 /// Not instantiated directly: use vrpn_MainloopObject::wrap() to create one
-///
 class vrpn_MainloopObject {
 	public:
+		/// Exception thrown when trying to wrap a NULL pointer.
 		struct CannotWrapNullPointerIntoMainloopObject : public std::logic_error {
 			CannotWrapNullPointerIntoMainloopObject() : std::logic_error("Cannot wrap a null pointer into a vrpn_MainloopObject!") {}
 		};
+
+		/// Destructor
 		virtual ~vrpn_MainloopObject() {}
+
+		/// The mainloop function: the primary thing we look for in a VRPN object
 		virtual void mainloop() = 0;
 
+		/// Wrapping function for smart connection pointers
 		static vrpn_MainloopObject * wrap(vrpn_ConnectionPtr o);
 
+		/// Templated wrapping function
 		template<class T>
 		static vrpn_MainloopObject * wrap(T * o);
 
+		/// Templated wrapping function that can encourage the
+		/// wrapper to not destroy the wrapped object at destruction
 		template<class T>
 		static vrpn_MainloopObject * wrap(T * o, bool owner);
 	protected:
 		vrpn_MainloopObject() {}
 };
 
+
+/// Namespace enclosing internal implementation details
 namespace detail {
+	/// Template class for holding generic VRPN objects with
+	/// type information.
 	template<class T>
 	class TypedMainloopObject : public vrpn_MainloopObject {
 		public:
@@ -69,6 +81,8 @@ namespace detail {
 			bool _do_delete;
 	};
 
+	/// Class for holding connections that are maintained by
+	/// vrpn_ConnectionPtr smart pointers.
 	class ConnectionPtrObject : public vrpn_MainloopObject {
 		public:
 			explicit ConnectionPtrObject(vrpn_ConnectionPtr o) : _instance(o) {
@@ -99,7 +113,7 @@ inline vrpn_MainloopObject * vrpn_MainloopObject::wrap(T * o, bool owner) {
 	return new detail::TypedMainloopObject<T>(o, owner);
 }
 
-/* Disabled for now because we do need to delete connection objects we create ourselves */
+/* Disabled for now because we do need to delete connection objects we create ourselves to avoid warnings
 template<>
 inline vrpn_MainloopObject * vrpn_MainloopObject::wrap<vrpn_Connection>(vrpn_Connection * o) {
 	// Connection objects auto-delete
@@ -108,5 +122,5 @@ inline vrpn_MainloopObject * vrpn_MainloopObject::wrap<vrpn_Connection>(vrpn_Con
 #endif
 	return new detail::TypedMainloopObject<vrpn_Connection>(o, false);
 }
-
+ */
 #endif
