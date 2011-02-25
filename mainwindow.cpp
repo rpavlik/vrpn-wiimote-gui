@@ -38,8 +38,8 @@ MainWindow::~MainWindow() {
 
 void MainWindow::connectedWiimote() {
 	ui->toolBox->addItem(_wmPanel.data(),
-						 QIcon(":/wiimote-mono.svg"),
-						 _wand->deviceName());
+	                     QIcon(":/wiimote-mono.svg"),
+	                     _wand->deviceName());
 	_wmPanel->connected(_wand);
 	ui->toolBox->setCurrentIndex(ui->toolBox->count() - 1);
 }

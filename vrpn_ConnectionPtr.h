@@ -143,7 +143,7 @@ class vrpn_ConnectionPtr {
 
 		/// Contained pointer
 		vrpn_Connection * _p;
-		
+
 		/// Dummy function supporting the safe bool idiom
 		void this_type_does_not_support_comparisons() {}
 };
