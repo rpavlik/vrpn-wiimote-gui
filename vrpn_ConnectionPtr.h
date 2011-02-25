@@ -107,6 +107,8 @@ class vrpn_ConnectionPtr {
 			}
 		}
 		vrpn_Connection * _p;
+		
+		void this_type_does_not_support_comparisons() {}
 };
 
 template <typename T>
