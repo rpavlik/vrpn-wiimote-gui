@@ -8,10 +8,13 @@
 #include <QSharedPointer>
 #include <QMutex>
 
+/// A class supporting the interaction of Qt and the VRPN mainloop:
+/// uses vrpn_MainloopContainer to hold arbitrary vrpn objects and
+/// mainloop them at a regular basis.
 class vrpn_QMainloopContainer : public QObject {
 		Q_OBJECT
 	public:
-		explicit vrpn_QMainloopContainer(QObject *parent = 0);
+		explicit vrpn_QMainloopContainer(int msInterval = 20, QObject *parent = 0);
 		~vrpn_QMainloopContainer();
 
 		void add(vrpn_MainloopObject * o);
@@ -36,6 +39,7 @@ class vrpn_QMainloopContainer : public QObject {
 		void clear();
 
 	private:
+		int _msInterval;
 		QMutex _vectorMutex;
 		QSharedPointer<QTimer> _timer;
 		vrpn_MainloopContainer _vrpn;

@@ -2,8 +2,9 @@
 
 #include <QMutexLocker>
 
-vrpn_QMainloopContainer::vrpn_QMainloopContainer(QObject *parent) :
-	QObject(parent) {
+vrpn_QMainloopContainer::vrpn_QMainloopContainer(int msInterval, QObject *parent) :
+	QObject(parent),
+	_msInterval(msInterval) {
 }
 
 vrpn_QMainloopContainer::~vrpn_QMainloopContainer() {
@@ -39,7 +40,7 @@ void vrpn_QMainloopContainer::start() {
 	connect(_timer.data(), SIGNAL(timeout()), this, SLOT(mainloop()));
 
 	emit started();
-	_timer->start(20);
+	_timer->start(_msInterval);
 }
 
 void vrpn_QMainloopContainer::mainloop() {
