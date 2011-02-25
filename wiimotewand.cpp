@@ -13,7 +13,7 @@ static void VRPN_CALLBACK handle_wiimote(void* userdata, const vrpn_ANALOGCB a) 
 	static_cast<WiimoteWand*>(userdata)->setBattery(a.channel[0]);
 }
 static void VRPN_CALLBACK handle_button(void *userdata,
-										const vrpn_BUTTONCB info) {
+                                        const vrpn_BUTTONCB info) {
 	static_cast<WiimoteWand*>(userdata)->setButton(info.button, static_cast<bool>(info.state));
 }
 
@@ -24,7 +24,7 @@ static const char WIIMOTE_NAME[] = "WiiMote0";
 WiimoteWand::WiimoteWand(QObject *parent) :
 	QObject(parent),
 	_connected(false),
-        _timeWaited(0) {
+	_timeWaited(0) {
 }
 
 QString WiimoteWand::deviceName() const {
@@ -44,7 +44,7 @@ void WiimoteWand::connect() {
 	_vrpn.add(cnx);
 
 	emit statusUpdate(QString("Creating Wiimote device object..."));
-	_wiimote = new vrpn_WiiMote(WIIMOTE_NAME, cnx, 0, 0, 0, 1);
+	_wiimote = new vrpn_WiiMote(WIIMOTE_NAME, cnx.get(), 0, 0, 0, 1);
 	if (!_wiimote) {
 		emit connectionFailed(QString("Creation of wiimote object failed!"));
 		return;
@@ -53,9 +53,9 @@ void WiimoteWand::connect() {
 
 	_vrpn.add(_wiimote);
 #ifdef vrpn_THREADS_AVAILABLE
-        _timeWaited = 50;
-        emit statusUpdate(QString("Waiting for Wiimote to connect, running mainloop..."));
-        _vrpn.start();
+	_timeWaited = 50;
+	emit statusUpdate(QString("Waiting for Wiimote to connect, running mainloop..."));
+	_vrpn.start();
 	QTimer::singleShot(50, this, SLOT(checkWiimoteDeviceInit()));
 #else
 	if (!wm->isValid()) {
@@ -69,11 +69,11 @@ void WiimoteWand::connect() {
 
 void WiimoteWand::disconnect() {
 	//if (_connected) {
-		_vrpn.stop();
-		_vrpn.clear();
-		_wiimote = NULL;
-		_connected = false;
-		emit disconnected();
+	_vrpn.stop();
+	_vrpn.clear();
+	_wiimote = NULL;
+	_connected = false;
+	emit disconnected();
 	//}
 }
 
@@ -93,9 +93,9 @@ void WiimoteWand::checkWiimoteDeviceRuntime() {
 void WiimoteWand::checkWiimoteDeviceInit() {
 	if (!_wiimote->isValid()) {
 #ifdef vrpn_THREADS_AVAILABLE
-                if (_timeWaited < 5000) {
+		if (_timeWaited < 5000) {
 			emit statusUpdate(QString("..."));
-                        _timeWaited += 300;
+			_timeWaited += 300;
 			QTimer::singleShot(300, this, SLOT(checkWiimoteDeviceInit()));
 		} else {
 #ifdef _WIN32
@@ -108,12 +108,12 @@ void WiimoteWand::checkWiimoteDeviceInit() {
 #endif
 		return;
 	}
-        emit statusUpdate(QString("Got valid connection to Wiimote."));
-        _vrpn.stop();
+	emit statusUpdate(QString("Got valid connection to Wiimote."));
+	_vrpn.stop();
 
 	emit statusUpdate(QString("Creating analog device client..."));
 	vrpn_ConnectionPtr cnx(static_cast<vrpn_Analog*>(_wiimote)->connectionPtr());
-	vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, cnx));
+	vrpn_Analog_Remote * anaRem(new vrpn_Analog_Remote(WIIMOTE_NAME, cnx.get()));
 	if (!anaRem) {
 		emit connectionFailed(QString("Creation of analog remote object failed!"));
 		return;
@@ -123,7 +123,7 @@ void WiimoteWand::checkWiimoteDeviceInit() {
 	anaRem->register_change_handler(this, &handle_wiimote);
 
 	emit statusUpdate(QString("Creating button device client..."));
-	vrpn_Button_Remote * btnRem(new vrpn_Button_Remote(WIIMOTE_NAME, cnx));
+	vrpn_Button_Remote * btnRem(new vrpn_Button_Remote(WIIMOTE_NAME, cnx.get()));
 	if (!btnRem) {
 		emit connectionFailed(QString("Creation of button remote object failed!"));
 		return;

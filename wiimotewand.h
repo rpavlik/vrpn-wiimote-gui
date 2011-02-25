@@ -40,7 +40,7 @@ class WiimoteWand : public QObject {
 		bool _connected;
 		vrpn_WiiMote * _wiimote;
 		vrpn_QMainloopContainer _vrpn;
-                int _timeWaited;
+		int _timeWaited;
 	public:
 		void setBattery(float level);
 		void setButton(int button, bool state);
