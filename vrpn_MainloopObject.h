@@ -39,9 +39,25 @@ class vrpn_MainloopObject {
 		template<class T>
 		static vrpn_MainloopObject * wrap(T * o, bool owner);
 	protected:
+		/// Internal function to return a typeless pointer of the contained
+		/// object, for comparison purposes.
+		virtual void * _returnContained() const = 0;
 		vrpn_MainloopObject() {}
+		friend bool operator==(vrpn_MainloopObject const & lhs, vrpn_MainloopObject const & rhs);
+		friend bool operator!=(vrpn_MainloopObject const & lhs, vrpn_MainloopObject const & rhs);
 };
 
+/// @name Comparison operators
+/// @relates vrpn_MainloopObject
+/// @{
+inline bool operator==(vrpn_MainloopObject const & lhs, vrpn_MainloopObject const & rhs) {
+	return lhs._returnContained() == rhs._returnContained();
+}
+
+inline bool operator!=(vrpn_MainloopObject const & lhs, vrpn_MainloopObject const & rhs) {
+	return lhs._returnContained() == rhs._returnContained();
+}
+/// @}
 
 /// Namespace enclosing internal implementation details
 namespace detail {
@@ -71,12 +87,14 @@ namespace detail {
 				}
 			}
 
-
 			virtual void mainloop() {
 				_instance->mainloop();
 			}
 
-		private:
+		protected:
+			virtual void * _returnContained() const {
+				return _instance;
+			}
 			T * _instance;
 			bool _do_delete;
 	};
@@ -90,8 +108,14 @@ namespace detail {
 					throw vrpn_MainloopObject::CannotWrapNullPointerIntoMainloopObject();
 				}
 			}
+
 			virtual void mainloop() {
 				_instance->mainloop();
+			}
+
+		protected:
+			virtual void * _returnContained() const {
+				return _instance.get();
 			}
 		private:
 			vrpn_ConnectionPtr _instance;
