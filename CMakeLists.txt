@@ -54,26 +54,22 @@ set(EXTRA_LIBS ${QT_LIBRARIES} ${VRPN_SERVER_LIBRARIES} ${WIIUSE_LIBRARIES})
 include_directories(${VRPN_INCLUDE_DIRS})
 
 add_subdirectory(QWiimoteWidget)
+add_subdirectory(qvrpn)
+include_directories(${QVRPN_INCLUDE_DIRS})
 
 set(SOURCES
 	main.cpp
 	mainwindow.cpp
 	wiimotewand.cpp
-	WiimoteToolboxPanel.cpp
-	vrpn_MainloopContainer.cpp
-	vrpn_QMainloopContainer.cpp)
+	WiimoteToolboxPanel.cpp)
 
-set(HEADERS
-	vrpn_ConnectionPtr.h
-	vrpn_MainloopContainer.h
-	vrpn_MainloopObject.h)
+set(HEADERS)
 
 set(UIS mainwindow.ui
 	wiimotepanel.ui)
 
 set(MOCS
 	mainwindow.h
-	vrpn_QMainloopContainer.h
 	WiimoteToolboxPanel.h
 	wiimotewand.h)
 
@@ -101,7 +97,7 @@ add_executable(wiimote-wand-gui
 	${MOCS}
 	${RESOURCES})
 
-target_link_libraries(wiimote-wand-gui QWiimoteWidget ${EXTRA_LIBS})
+target_link_libraries(wiimote-wand-gui QWiimoteWidget ${QVRPN_LIBRARIES} ${EXTRA_LIBS})
 
 
 if(INSTALL_WIIUSE_LIBRARY)
