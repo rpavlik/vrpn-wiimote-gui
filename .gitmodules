@@ -1,3 +1,9 @@
 [submodule "qvrpn"]
 	path = qvrpn
 	url = git://github.com/rpavlik/qvrpn.git
+[submodule "vrpn"]
+	path = vrpn
+	url = https://github.com/rpavlik/vrpn.git
+[submodule "wiiuse"]
+	path = wiiuse
+	url = https://github.com/rpavlik/wiiuse.git
