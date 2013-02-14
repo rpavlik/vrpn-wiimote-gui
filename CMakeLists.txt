@@ -34,6 +34,7 @@ set(BUILD_WIIUSE_SHARED_LIB FALSE CACHE INTERNAL "" FORCE)
 add_subdirectory(wiiuse)
 
 # Build VRPN as subproject
+set(WIIUSE_RUNTIME_LIBRARY ${WIIUSE_LIBRARY} CACHE INTERNAL "" FORCE)
 set(VRPN_USE_WIIUSE TRUE CACHE INTERNAL "" FORCE)
 set(VRPN_GPL_SERVER TRUE CACHE INTERNAL "" FORCE)
 set(VRPN_BUILD_SERVER_LIBRARY TRUE CACHE INTERNAL "" FORCE)
@@ -43,6 +44,7 @@ add_subdirectory(vrpn)
 set(EXTRA_LIBS ${QT_LIBRARIES} ${VRPN_SERVER_LIBRARY})
 include_directories(${VRPN_INCLUDE_DIRS})
 add_definitions(${VRPN_DEFINITIONS})
+set(VRPN_FOUND TRUE)
 
 add_subdirectory(QWiimoteWidget)
 add_subdirectory(qvrpn)
