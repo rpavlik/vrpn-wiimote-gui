@@ -18,17 +18,6 @@ set(CPACK_PACKAGE_VERSION
 # Perform build configuration of dependencies
 ###
 
-# Locally-developed modules dist'ed with this app - always have this first.
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(UseBackportedModules)
-
-find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSVG REQUIRED)
-include(${QT_USE_FILE})
-
-###
-# Build the project
-###
-
 # Build Wiiuse statically as a subproject
 set(BUILD_WIIUSE_SHARED_LIB FALSE CACHE INTERNAL "" FORCE)
 add_subdirectory(wiiuse)
@@ -40,6 +29,15 @@ set(VRPN_GPL_SERVER TRUE CACHE INTERNAL "" FORCE)
 set(VRPN_BUILD_SERVER_LIBRARY TRUE CACHE INTERNAL "" FORCE)
 add_subdirectory(vrpn)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(UseBackportedModules)
+
+find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSVG REQUIRED)
+include(${QT_USE_FILE})
+
+###
+# Build the project
+###
 
 set(EXTRA_LIBS ${QT_LIBRARIES} ${VRPN_SERVER_LIBRARY})
 include_directories(${VRPN_INCLUDE_DIRS})
