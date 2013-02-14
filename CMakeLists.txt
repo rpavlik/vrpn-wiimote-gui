@@ -13,45 +13,36 @@ set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(CPACK_PACKAGE_VERSION
 	"${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 
-###
-# Options
-###
-
-if(WIN32)
-	set(INSTALL_WIIUSE_LIBRARY ON)
-	set(RUNTIME_LIBRARY_INSTALL_DIR bin)
-else()
-	option(INSTALL_WIIUSE_LIBRARY "Whether we should install the WiiUse shared library despite being on a platform that should know better." OFF)
-	set(RUNTIME_LIBRARY_INSTALL_DIR lib)
-endif()
 
 ###
 # Perform build configuration of dependencies
 ###
 
-if(INSTALL_WIIUSE_LIBRARY)
-	# Always point to WiiUse, for safety's sake
-	set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${RUNTIME_LIBRARY_INSTALL_DIR}")
-endif()
-
 # Locally-developed modules dist'ed with this app - always have this first.
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
 
 find_package(Qt4 COMPONENTS QtMain QtCore QtGui QtSVG REQUIRED)
 include(${QT_USE_FILE})
 
-find_package(VRPN REQUIRED)
-
-if(NOT APPLE)
-	find_package(WiiUse REQUIRED)
-endif()
-
 ###
 # Build the project
 ###
-set(EXTRA_LIBS ${QT_LIBRARIES} ${VRPN_SERVER_LIBRARIES} ${WIIUSE_LIBRARIES})
+
+# Build Wiiuse statically as a subproject
+set(BUILD_WIIUSE_SHARED_LIB FALSE CACHE INTERNAL "" FORCE)
+add_subdirectory(wiiuse)
+
+# Build VRPN as subproject
+set(VRPN_USE_WIIUSE TRUE CACHE INTERNAL "" FORCE)
+set(VRPN_GPL_SERVER TRUE CACHE INTERNAL "" FORCE)
+set(VRPN_BUILD_SERVER_LIBRARY TRUE CACHE INTERNAL "" FORCE)
+add_subdirectory(vrpn)
+
+
+set(EXTRA_LIBS ${QT_LIBRARIES} ${VRPN_SERVER_LIBRARY})
 include_directories(${VRPN_INCLUDE_DIRS})
+add_definitions(${VRPN_DEFINITIONS})
 
 add_subdirectory(QWiimoteWidget)
 add_subdirectory(qvrpn)
@@ -99,11 +90,5 @@ add_executable(wiimote-wand-gui
 
 target_link_libraries(wiimote-wand-gui QWiimoteWidget ${QVRPN_LIBRARIES} ${EXTRA_LIBS})
 
-
-if(INSTALL_WIIUSE_LIBRARY)
-	# Install the WiiUse DLL
-	install(FILES ${WIIUSE_RUNTIME_LIBRARY}
-		DESTINATION ${RUNTIME_LIBRARY_INSTALL_DIR})
-endif()
 
 include(InstallRequiredSystemLibraries)
