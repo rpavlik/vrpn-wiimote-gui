@@ -7,6 +7,9 @@ cmake_minimum_required(VERSION 2.6)
 # Set package properties
 project(wiimote-gui)
 
+# Define executable name as a CMake variable
+set(EXECUTABLE_NAME "wiimote-wand-gui")
+
 set(CPACK_PACKAGE_VERSION_MAJOR "1")
 set(CPACK_PACKAGE_VERSION_MINOR "1")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
@@ -79,7 +82,7 @@ source_group("Generated Sources - Do Not Edit" FILES ${GENERATED_SOURCES})
 include_directories(${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Build and link the app!
-add_executable(wiimote-wand-gui
+add_executable(${EXECUTABLE_NAME}
 	MACOSX_BUNDLE
 	WIN32
 	${SOURCES}
@@ -89,10 +92,10 @@ add_executable(wiimote-wand-gui
 	${MOCS}
 	${RESOURCES})
 
-target_link_libraries(wiimote-wand-gui QWiimoteWidget ${QVRPN_LIBRARIES} ${EXTRA_LIBS})
+target_link_libraries(${EXECUTABLE_NAME} QWiimoteWidget ${QVRPN_LIBRARIES} ${EXTRA_LIBS})
 
 
 include(InstallRequiredSystemLibraries)
 
 # Install target
-install(TARGETS wiimote-wand-gui DESTINATION bin)
+install(TARGETS ${EXECUTABLE_NAME} DESTINATION bin)
