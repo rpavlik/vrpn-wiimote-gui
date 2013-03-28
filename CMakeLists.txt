@@ -93,3 +93,6 @@ target_link_libraries(wiimote-wand-gui QWiimoteWidget ${QVRPN_LIBRARIES} ${EXTRA
 
 
 include(InstallRequiredSystemLibraries)
+
+# Install target
+install(TARGETS wiimote-wand-gui DESTINATION bin)
